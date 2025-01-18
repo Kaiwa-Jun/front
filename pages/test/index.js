@@ -16,8 +16,6 @@ const TestPage = () => {
       .catch((error) => setError(error.message));
   }, []);
 
-  console.log(data);
-
   if (error) {
     return <div>エラー: {error}</div>;
   }
