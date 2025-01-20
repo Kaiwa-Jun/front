@@ -1,13 +1,9 @@
 import { AuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
-// もしGoogle等も使うなら import GoogleProvider from "next-auth/providers/google"
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: AuthOptions = {
-  // JWTモードを使う
   session: { strategy: "jwt" },
-
-  // NextAuth用のsecret
-  // (envファイルや本番環境で process.env.NEXTAUTH_SECRET として管理)
   secret: process.env.NEXTAUTH_SECRET,
 
   // OAuthプロバイダ設定
@@ -16,7 +12,10 @@ export const authOptions: AuthOptions = {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
-    // GoogleProvider({ ... })
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
 
   callbacks: {
@@ -27,7 +26,7 @@ export const authOptions: AuthOptions = {
         token.providerAccountId = account.providerAccountId;
         token.email = profile.email;
         token.name = profile.name || profile.email?.split("@")[0];
-        token.picture = profile.picture;
+        token.picture = (profile as { picture?: string }).picture;
       }
       return token;
     },

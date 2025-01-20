@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/goal-setting"
+    "app/goal-setting",
+    "next-auth.d.ts"
   ],
   "exclude": ["node_modules"]
 }
