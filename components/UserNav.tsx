@@ -11,14 +11,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export function UserNav() {
   const router = useRouter();
+  const { data: session } = useSession();
+  console.log(session);
 
   const handleLogout = () => {
-    signOut();
-    router.push("/login");
+    signOut({ callbackUrl: "/login" });
   };
 
   return (
@@ -29,16 +30,24 @@ export function UserNav() {
       >
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarFallback>YT</AvatarFallback>
+            {session?.user?.image ? (
+              <img src={session.user.image} alt="User Avatar" />
+            ) : (
+              <AvatarFallback>
+                {session?.user?.name?.charAt(0) || "U"}
+              </AvatarFallback>
+            )}
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-white" align="start" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">山田 太郎</p>
+            <p className="text-sm font-medium leading-none">
+              {session?.user?.name || "ゲスト"}
+            </p>
             <p className="text-xs leading-none text-muted-foreground">
-              yamada@example.com
+              {session?.user?.email || "メールアドレスなし"}
             </p>
           </div>
         </DropdownMenuLabel>
