@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +19,18 @@ import { Progress } from "@/components/ui/progress";
 
 export default function Onboarding() {
   const router = useRouter();
+  const { status } = useSession();
   const [step, setStep] = useState(1);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return null; // 認証状態が確認されるまで何も表示しない
+  }
 
   const handleNext = () => {
     if (step < 3) {
