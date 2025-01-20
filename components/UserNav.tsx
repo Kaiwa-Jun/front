@@ -10,13 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 
 export function UserNav() {
-  const router = useRouter();
   const { data: session } = useSession();
-  console.log(session);
 
   const handleLogout = () => {
     signOut({ callbackUrl: "/login" });

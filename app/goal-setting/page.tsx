@@ -17,7 +17,7 @@ import { useEffect } from "react";
 
 export default function GoalSetting() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   useEffect(() => {
     if (status === "unauthenticated") {

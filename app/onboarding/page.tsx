@@ -19,7 +19,7 @@ import { Progress } from "@/components/ui/progress";
 
 export default function Onboarding() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [step, setStep] = useState(1);
 
   useEffect(() => {
