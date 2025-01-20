@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 export function UserNav() {
   const { data: session } = useSession();
@@ -28,7 +29,12 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             {session?.user?.image ? (
-              <img src={session.user.image} alt="User Avatar" />
+              <Image
+                src={session.user.image}
+                alt="User Avatar"
+                width={500}
+                height={500}
+              />
             ) : (
               <AvatarFallback>
                 {session?.user?.name?.charAt(0) || "U"}
