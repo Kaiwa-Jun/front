@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +19,17 @@ import { useEffect } from "react";
 export default function GoalSetting() {
   const router = useRouter();
   const { status } = useSession();
+
+  // SMART目標のstate
+  const [specific, setSpecific] = useState("");
+  const [measurable, setMeasurable] = useState("");
+  const [achievable, setAchievable] = useState("");
+  const [relevant, setRelevant] = useState("");
+  const [timeBound, setTimeBound] = useState("");
+
+  // OKRのstate
+  const [objective, setObjective] = useState("");
+  const [keyResults, setKeyResults] = useState("");
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -49,23 +61,43 @@ export default function GoalSetting() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Specific（具体的）</Label>
-              <Input placeholder="具体的に何を達成したいですか？" />
+              <Input
+                placeholder="具体的に何を達成したいですか？"
+                value={specific}
+                onChange={(e) => setSpecific(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label>Measurable（測定可能）</Label>
-              <Input placeholder="どのように進捗を測定しますか？" />
+              <Input
+                placeholder="どのように進捗を測定しますか？"
+                value={measurable}
+                onChange={(e) => setMeasurable(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label>Achievable（達成可能）</Label>
-              <Input placeholder="現実的に達成可能ですか？" />
+              <Input
+                placeholder="現実的に達成可能ですか？"
+                value={achievable}
+                onChange={(e) => setAchievable(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label>Relevant（関連性）</Label>
-              <Input placeholder="なぜこの目標が重要ですか？" />
+              <Input
+                placeholder="なぜこの目標が重要ですか？"
+                value={relevant}
+                onChange={(e) => setRelevant(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label>Time-bound（期限）</Label>
-              <Input type="date" />
+              <Input
+                type="date"
+                value={timeBound}
+                onChange={(e) => setTimeBound(e.target.value)}
+              />
             </div>
           </CardContent>
         </Card>
@@ -78,18 +110,39 @@ export default function GoalSetting() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Objective（目標）</Label>
-              <Textarea placeholder="達成したい大きな目標は何ですか？" />
+              <Textarea
+                placeholder="達成したい大きな目標は何ですか？"
+                value={objective}
+                onChange={(e) => setObjective(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label>Key Results（主要な結果）</Label>
-              <Textarea placeholder="目標達成の指標となる具体的な結果を3つ記入してください" />
+              <Textarea
+                placeholder="目標達成の指標となる具体的な結果を3つ記入してください"
+                value={keyResults}
+                onChange={(e) => setKeyResults(e.target.value)}
+              />
             </div>
           </CardContent>
         </Card>
 
         <div className="flex justify-end">
           <Button
-            onClick={() => router.push("/roadmap")}
+            onClick={() => {
+              console.log("SMART目標:", {
+                specific,
+                measurable,
+                achievable,
+                relevant,
+                timeBound,
+              });
+              console.log("OKR:", {
+                objective,
+                keyResults,
+              });
+              router.push("/roadmap");
+            }}
             className="bg-indigo-600 text-white"
           >
             次へ：ロードマップ作成
