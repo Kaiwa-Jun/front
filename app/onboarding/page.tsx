@@ -21,6 +21,12 @@ export default function Onboarding() {
   const router = useRouter();
   const { status } = useSession();
   const [step, setStep] = useState(1);
+  const [name, setName] = useState("");
+  const [occupation, setOccupation] = useState("");
+  const [mainGoal, setMainGoal] = useState("");
+  const [goalDetail, setGoalDetail] = useState("");
+  const [weekdayHours, setWeekdayHours] = useState(0);
+  const [weekendHours, setWeekendHours] = useState(0);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -36,6 +42,15 @@ export default function Onboarding() {
     if (step < 3) {
       setStep(step + 1);
     } else {
+      const formData = {
+        name,
+        occupation,
+        mainGoal,
+        goalDetail,
+        weekdayHours,
+        weekendHours,
+      };
+      console.log("Onboarding form data:", formData);
       router.push("/goal-setting");
     }
   };
@@ -67,11 +82,21 @@ export default function Onboarding() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">お名前</Label>
-                <Input id="name" placeholder="山田 太郎" />
+                <Input
+                  id="name"
+                  placeholder="山田 太郎"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="occupation">職業</Label>
-                <Input id="occupation" placeholder="会社員" />
+                <Input
+                  id="occupation"
+                  placeholder="会社員"
+                  value={occupation}
+                  onChange={(e) => setOccupation(e.target.value)}
+                />
               </div>
             </CardContent>
             <CardFooter className="flex justify-between gap-4">
@@ -97,6 +122,8 @@ export default function Onboarding() {
                 <Input
                   id="main-goal"
                   placeholder="プログラミングスキルの向上"
+                  value={mainGoal}
+                  onChange={(e) => setMainGoal(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
@@ -104,6 +131,8 @@ export default function Onboarding() {
                 <Textarea
                   id="goal-detail"
                   placeholder="具体的にどのようなスキルを身につけたいですか？"
+                  value={goalDetail}
+                  onChange={(e) => setGoalDetail(e.target.value)}
                 />
               </div>
             </CardContent>
@@ -136,6 +165,8 @@ export default function Onboarding() {
                     placeholder="2"
                     min="0"
                     max="24"
+                    value={weekdayHours}
+                    onChange={(e) => setWeekdayHours(Number(e.target.value))}
                   />
                   <span>時間</span>
                 </div>
@@ -149,6 +180,8 @@ export default function Onboarding() {
                     placeholder="4"
                     min="0"
                     max="24"
+                    value={weekendHours}
+                    onChange={(e) => setWeekendHours(Number(e.target.value))}
                   />
                   <span>時間</span>
                 </div>
