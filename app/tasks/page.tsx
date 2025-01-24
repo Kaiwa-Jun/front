@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -61,15 +60,6 @@ export default function Tasks() {
             </div>
           </CardContent>
         </Card>
-
-        <div className="flex justify-end">
-          <Button
-            onClick={() => router.push("/dashboard")}
-            className="bg-indigo-600 text-white"
-          >
-            次へ：ダッシュボード
-          </Button>
-        </div>
       </div>
     </div>
   );

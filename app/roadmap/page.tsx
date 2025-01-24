@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -54,15 +53,6 @@ export default function Roadmap() {
               </CardContent>
             </Card>
           ))}
-        </div>
-
-        <div className="flex justify-end">
-          <Button
-            onClick={() => router.push("/tasks")}
-            className="bg-indigo-600 text-white"
-          >
-            次へ：タスク管理
-          </Button>
         </div>
       </div>
     </div>
