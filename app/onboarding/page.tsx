@@ -24,7 +24,9 @@ export default function Onboarding() {
   const [goalReason, setGoalReason] = useState("");
   const [customReason, setCustomReason] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [keyResults, setKeyResults] = useState([{ text: "", measurement: "" }]);
+  const [keyResults, setKeyResults] = useState<
+    { text: string; measurement: string }[]
+  >([]);
   const [weekdayTimeSlots, setWeekdayTimeSlots] = useState([
     { start: "07:00", end: "08:00" },
   ]);
