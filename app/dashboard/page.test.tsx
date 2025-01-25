@@ -1,60 +1,63 @@
+/**
+ * front/app/dashboard/page.test.tsx
+ */
 import React from "react";
 import { render, screen } from "@testing-library/react";
-// テスト対象のページ
-import Dashboard from "./page";
+import * as nextAuth from "next-auth/react";
+import * as nextNavigation from "next/navigation";
 
-// next-auth/react と next/navigation のフックをモックする
+// 先にモジュールをモック化しておく
 jest.mock("next-auth/react", () => ({
-  // デフォルトエクスポートがある場合は {} で返すように
-  // ただしこの例では useSession だけをモック
   useSession: jest.fn(),
 }));
-
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
-describe("Dashboard Page", () => {
-  // モック用の変数を宣言
-  const mockUseSession = require("next-auth/react").useSession;
-  const mockUseRouter = require("next/navigation").useRouter;
+// テスト対象のコンポーネントを最後に import
+import Dashboard from "./page";
 
+describe("Dashboard Page (Pattern A)", () => {
   beforeEach(() => {
-    // 各テスト前にモック関数をリセット
+    // 各テスト開始前にモックをクリア
     jest.clearAllMocks();
   });
 
   test("認証されていない場合、/login にリダイレクトされる", () => {
-    // useSession の戻り値を unauthenticated に設定
-    mockUseSession.mockReturnValue({
+    // useSession の返り値を unauthenticated に設定
+    (nextAuth.useSession as jest.Mock).mockReturnValue({
       status: "unauthenticated",
     });
 
+    // useRouter の push をモック
     const pushMock = jest.fn();
-    mockUseRouter.mockReturnValue({
+    (nextNavigation.useRouter as jest.Mock).mockReturnValue({
       push: pushMock,
     });
 
     render(<Dashboard />);
-    // unauthenticated なら useEffect 内で router.push("/login") が呼ばれるはず
     expect(pushMock).toHaveBeenCalledWith("/login");
   });
 
   test("ロード中 (loading) のときは何も表示されない", () => {
-    mockUseSession.mockReturnValue({ status: "loading" });
-    mockUseRouter.mockReturnValue({ push: jest.fn() });
+    (nextAuth.useSession as jest.Mock).mockReturnValue({ status: "loading" });
+    (nextNavigation.useRouter as jest.Mock).mockReturnValue({
+      push: jest.fn(),
+    });
 
     const { container } = render(<Dashboard />);
-    // DOM を何も描画しないので、container が空の状態かどうかを確認
     expect(container).toBeEmptyDOMElement();
   });
 
   test("認証済み (authenticated) の場合はダッシュボードが描画される", () => {
-    mockUseSession.mockReturnValue({ status: "authenticated" });
-    mockUseRouter.mockReturnValue({ push: jest.fn() });
+    (nextAuth.useSession as jest.Mock).mockReturnValue({
+      status: "authenticated",
+    });
+    (nextNavigation.useRouter as jest.Mock).mockReturnValue({
+      push: jest.fn(),
+    });
 
     render(<Dashboard />);
-    // ダッシュボードの文言が表示されているかどうか
     expect(screen.getByText("ダッシュボード")).toBeInTheDocument();
     expect(
       screen.getByText("学習の進捗状況を確認しましょう")
