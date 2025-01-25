@@ -17,12 +17,16 @@ jest.mock("next/head", () => {
 });
 
 // Mock authentication and navigation
-jest.mock("next-auth/react", () => ({
-  useSession: jest.fn(),
-}));
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
-}));
+jest.mock("next-auth/react", () => {
+  return {
+    useSession: jest.fn(),
+  };
+});
+jest.mock("next/navigation", () => {
+  return {
+    useRouter: jest.fn(),
+  };
+});
 
 // Import the page component wrapped with necessary providers
 import Dashboard from "./page";
