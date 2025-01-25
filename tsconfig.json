@@ -1,5 +1,13 @@
 {
   "compilerOptions": {
+    // "preserve" ではなく、"react" または "react-jsx" にする
+    "jsx": "react-jsx",
+    // もしくは "jsx": "react",
+
+    // "moduleResolution": "bundler" はJest/ts-jestと相性が悪いケースがあるので "node" に
+    "moduleResolution": "node",
+
+    // 以下はそのままでもOKな項目ですが、参考までに載せています
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -8,10 +16,8 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
     "incremental": true,
     "types": ["next-auth"],
     "plugins": [
@@ -24,11 +30,12 @@
     }
   },
   "include": [
+    // "app/**/*" としておけば、app/dashboard などもカバーできる
+    "app/**/*",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/goal-setting",
     "next-auth.d.ts"
   ],
   "exclude": ["node_modules"]
