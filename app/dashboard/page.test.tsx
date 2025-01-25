@@ -1,20 +1,31 @@
+import React from "react";
+import { render } from "@testing-library/react";
 /**
  * front/app/dashboard/page.test.tsx
  */
-import React from "react";
-import { render, screen } from "@testing-library/react";
 import * as nextAuth from "next-auth/react";
 import * as nextNavigation from "next/navigation";
 
-// 先にモジュールをモック化しておく
-jest.mock("next-auth/react", () => ({
-  useSession: jest.fn(),
-}));
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
+// Mock Next.js page component
+jest.mock("next/head", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) =>
+    React.createElement(React.Fragment, null, children),
 }));
 
-// テスト対象のコンポーネントを最後に import
+// Mock authentication and navigation
+jest.mock("next-auth/react", () => {
+  return {
+    useSession: jest.fn(),
+  };
+});
+jest.mock("next/navigation", () => {
+  return {
+    useRouter: jest.fn(),
+  };
+});
+
+// Import the page component wrapped with necessary providers
 import Dashboard from "./page";
 
 describe("Dashboard Page (Pattern A)", () => {
@@ -57,10 +68,8 @@ describe("Dashboard Page (Pattern A)", () => {
       push: jest.fn(),
     });
 
-    render(<Dashboard />);
-    expect(screen.getByText("ダッシュボード")).toBeInTheDocument();
-    expect(
-      screen.getByText("学習の進捗状況を確認しましょう")
-    ).toBeInTheDocument();
+    const { getByText } = render(<Dashboard />);
+    expect(getByText("ダッシュボード")).toBeInTheDocument();
+    expect(getByText("学習の進捗状況を確認しましょう")).toBeInTheDocument();
   });
 });

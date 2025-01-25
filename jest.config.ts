@@ -1,11 +1,19 @@
-/** @type {import('jest').Config} */
-module.exports = {
+import type { Config } from "jest";
+
+const config: Config = {
   testEnvironment: "jest-environment-jsdom",
   transform: {
-    "^.+\\.(ts|tsx)$": "ts-jest",
+    "^.+\\.(t|j)sx?$": "@swc/jest",
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  // 任意の階層にある *.test.* や *.spec.* を対象
-  testMatch: ["**/?(*.)+(test|spec).[tj]s?(x)"],
+  moduleNameMapper: {
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+    "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/__mocks__/fileMock.js",
+    "^@/(.*)$": "<rootDir>/$1",
+  },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  testEnvironmentOptions: {
+    customExportConditions: [""],
+  },
 };
+
+export default config;
