@@ -7,14 +7,11 @@ import * as nextAuth from "next-auth/react";
 import * as nextNavigation from "next/navigation";
 
 // Mock Next.js page component
-jest.mock("next/head", () => {
-  const React = require("react");
-  return {
-    __esModule: true,
-    default: ({ children }: { children: React.ReactNode }) =>
-      React.createElement(React.Fragment, null, children),
-  };
-});
+jest.mock("next/head", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) =>
+    React.createElement(React.Fragment, null, children),
+}));
 
 // Mock authentication and navigation
 jest.mock("next-auth/react", () => {
