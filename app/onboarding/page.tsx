@@ -25,8 +25,12 @@ export default function Onboarding() {
   const [customReason, setCustomReason] = useState("");
   const [deadline, setDeadline] = useState("");
   const [keyResults, setKeyResults] = useState([{ text: "", measurement: "" }]);
-  const [weekdayHours, setWeekdayHours] = useState(0);
-  const [weekendHours, setWeekendHours] = useState(0);
+  const [weekdayTimeSlots, setWeekdayTimeSlots] = useState([
+    { start: "07:00", end: "08:00" },
+  ]);
+  const [weekendStyle, setWeekendStyle] = useState("午前のみ");
+  const [maxTasks, setMaxTasks] = useState(3);
+  const [skillLevel, setSkillLevel] = useState("初心者");
 
   const addKeyResult = () => {
     setKeyResults([...keyResults, { text: "", measurement: "" }]);
@@ -61,8 +65,10 @@ export default function Onboarding() {
         goalReason: goalReason === "その他" ? customReason : goalReason,
         deadline,
         keyResults,
-        weekdayHours,
-        weekendHours,
+        weekdayTimeSlots,
+        weekendStyle,
+        maxTasks,
+        skillLevel,
       };
       console.log("Onboarding form data:", formData);
       router.push("/dashboard");
@@ -297,34 +303,151 @@ export default function Onboarding() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="weekday-hours">平日（1日あたり）</Label>
-                <div className="flex items-center space-x-2">
-                  <Input
-                    id="weekday-hours"
-                    type="number"
-                    placeholder="2"
-                    min="0"
-                    max="24"
-                    value={weekdayHours}
-                    onChange={(e) => setWeekdayHours(Number(e.target.value))}
-                  />
-                  <span>時間</span>
+              <div className="space-y-4">
+                <div className="space-y-4">
+                  <Label>平日の学習/作業可能時間</Label>
+                  {weekdayTimeSlots.map((slot, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div className="flex-1">
+                        <Label>開始時間</Label>
+                        <select
+                          className="w-full p-2 border rounded"
+                          value={slot.start}
+                          onChange={(e) => {
+                            const newSlots = [...weekdayTimeSlots];
+                            newSlots[index].start = e.target.value;
+                            setWeekdayTimeSlots(newSlots);
+                          }}
+                        >
+                          {Array.from({ length: 24 }, (_, i) => {
+                            const hour = (i + 7).toString().padStart(2, "0");
+                            return ["00", "30"].map((minute) => (
+                              <option
+                                key={`${hour}:${minute}`}
+                                value={`${hour}:${minute}`}
+                              >
+                                {hour}:{minute}
+                              </option>
+                            ));
+                          }).flat()}
+                        </select>
+                      </div>
+                      <div className="flex-1">
+                        <Label>終了時間</Label>
+                        <select
+                          className="w-full p-2 border rounded"
+                          value={slot.end}
+                          onChange={(e) => {
+                            const newSlots = [...weekdayTimeSlots];
+                            newSlots[index].end = e.target.value;
+                            setWeekdayTimeSlots(newSlots);
+                          }}
+                        >
+                          {Array.from({ length: 24 }, (_, i) => {
+                            const hour = (i + 7).toString().padStart(2, "0");
+                            return ["00", "30"].map((minute) => (
+                              <option
+                                key={`${hour}:${minute}`}
+                                value={`${hour}:${minute}`}
+                              >
+                                {hour}:{minute}
+                              </option>
+                            ));
+                          }).flat()}
+                        </select>
+                      </div>
+                      {index === weekdayTimeSlots.length - 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setWeekdayTimeSlots([
+                              ...weekdayTimeSlots,
+                              { start: "07:00", end: "08:00" },
+                            ])
+                          }
+                          className="self-end"
+                        >
+                          追加
+                        </Button>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="weekend-hours">休日（1日あたり）</Label>
-                <div className="flex items-center space-x-2">
-                  <Input
-                    id="weekend-hours"
-                    type="number"
-                    placeholder="4"
-                    min="0"
-                    max="24"
-                    value={weekendHours}
-                    onChange={(e) => setWeekendHours(Number(e.target.value))}
-                  />
-                  <span>時間</span>
+
+                <div className="space-y-2">
+                  <Label>休日の学習/作業スタイル</Label>
+                  <div className="space-y-2">
+                    {["午前のみ", "午後のみ", "終日OK", "その他"].map(
+                      (style) => (
+                        <div
+                          key={style}
+                          className="flex items-center space-x-2"
+                        >
+                          <input
+                            type="radio"
+                            id={style}
+                            name="weekend-style"
+                            value={style}
+                            checked={weekendStyle === style}
+                            onChange={(e) => setWeekendStyle(e.target.value)}
+                          />
+                          <Label htmlFor={style}>{style}</Label>
+                          {style === "その他" && weekendStyle === "その他" && (
+                            <Input
+                              className="ml-2"
+                              placeholder="具体的なスタイル"
+                              value={weekendStyle}
+                              onChange={(e) => setWeekendStyle(e.target.value)}
+                            />
+                          )}
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>1日あたりの最大タスク数</Label>
+                  <select
+                    className="w-full p-2 border rounded"
+                    value={maxTasks}
+                    onChange={(e) => setMaxTasks(Number(e.target.value))}
+                  >
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <option key={num} value={num}>
+                        {num} タスク
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>現在のスキルレベル</Label>
+                  <div className="space-y-2">
+                    {["初心者", "中級者", "上級者", "その他"].map((level) => (
+                      <div key={level} className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          id={level}
+                          name="skill-level"
+                          value={level}
+                          checked={skillLevel === level}
+                          onChange={(e) => setSkillLevel(e.target.value)}
+                        />
+                        <Label htmlFor={level}>{level}</Label>
+                        {level === "その他" && skillLevel === "その他" && (
+                          <Input
+                            className="ml-2"
+                            placeholder="具体的なレベル"
+                            value={skillLevel}
+                            onChange={(e) => setSkillLevel(e.target.value)}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -342,15 +465,121 @@ export default function Onboarding() {
         {step === 3 && (
           <Card className="bg-white max-w-md mx-auto">
             <CardHeader>
-              <CardTitle>詳細設定</CardTitle>
+              <CardTitle>成功/失敗パターン & 最終確認</CardTitle>
               <CardDescription>
-                さらに具体的な目標やスケジュールを決めましょう
+                過去の経験から学び、最適な計画を立てましょう
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <Label>【過去にうまくいった成功パターン】</Label>
+                <div className="space-y-2">
+                  {["朝活", "週1回の振り返り", "目標を可視化"].map(
+                    (pattern) => (
+                      <div
+                        key={pattern}
+                        className="flex items-center space-x-2"
+                      >
+                        <input
+                          type="checkbox"
+                          id={`success-${pattern}`}
+                          className="w-4 h-4"
+                        />
+                        <Label htmlFor={`success-${pattern}`}>{pattern}</Label>
+                      </div>
+                    )
+                  )}
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="success-other"
+                      className="w-4 h-4"
+                    />
+                    <Label htmlFor="success-other">その他：</Label>
+                    <Input placeholder="具体的なパターン" className="flex-1" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <Label>【よくある失敗パターン】</Label>
+                <div className="space-y-2">
+                  {[
+                    "忙しくてやらなくなる",
+                    "1日に詰め込みすぎる",
+                    "タスクが多すぎて混乱",
+                  ].map((pattern) => (
+                    <div key={pattern} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`failure-${pattern}`}
+                        className="w-4 h-4"
+                      />
+                      <Label htmlFor={`failure-${pattern}`}>{pattern}</Label>
+                    </div>
+                  ))}
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="failure-other"
+                      className="w-4 h-4"
+                    />
+                    <Label htmlFor="failure-other">その他：</Label>
+                    <Input placeholder="具体的なパターン" className="flex-1" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <Label>【タスクの優先度の付け方】</Label>
+                <div className="space-y-2">
+                  {[
+                    "効果が大きいタスク優先",
+                    "納期が近いタスク優先",
+                    "短時間で終わるタスク優先",
+                  ].map((priority) => (
+                    <div key={priority} className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        id={`priority-${priority}`}
+                        name="priority"
+                        value={priority}
+                        className="w-4 h-4"
+                      />
+                      <Label htmlFor={`priority-${priority}`}>{priority}</Label>
+                    </div>
+                  ))}
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="priority-other"
+                      name="priority"
+                      className="w-4 h-4"
+                    />
+                    <Label htmlFor="priority-other">その他：</Label>
+                    <Input
+                      placeholder="具体的な優先度の付け方"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-2">
-                <Label htmlFor="sub-goal">サブ目標 (例)</Label>
-                <Input id="sub-goal" />
+                <Label>【その他の制約・メモ】</Label>
+                <textarea
+                  className="w-full p-2 border rounded min-h-[100px]"
+                  placeholder="自由に記入してください"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>【入力内容のプレビュー】</Label>
+                <div className="p-4 border rounded bg-gray-50">
+                  <p className="text-sm text-gray-600">
+                    (ここにStep1 & Step2の内容が表示される)
+                  </p>
+                </div>
               </div>
             </CardContent>
             <CardFooter className="flex justify-between gap-4">
@@ -358,7 +587,7 @@ export default function Onboarding() {
                 戻る
               </Button>
               <Button onClick={handleNext} className="bg-indigo-600 text-white">
-                設定完了
+                登録 / 確定
               </Button>
             </CardFooter>
           </Card>
