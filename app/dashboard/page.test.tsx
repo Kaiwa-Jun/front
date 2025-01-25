@@ -8,11 +8,11 @@ import * as nextNavigation from "next/navigation";
 
 // Mock Next.js page component
 jest.mock("next/head", () => {
+  const React = require("react");
   return {
     __esModule: true,
-    default: ({ children }: { children: Array<React.ReactElement> }) => {
-      return <>{children}</>;
-    },
+    default: ({ children }: { children: React.ReactNode }) =>
+      React.createElement(React.Fragment, null, children),
   };
 });
 

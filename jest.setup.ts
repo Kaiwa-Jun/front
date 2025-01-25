@@ -1,12 +1,5 @@
 import "@testing-library/jest-dom";
 import { TextEncoder, TextDecoder } from "util";
-import { configure } from "@testing-library/react";
-
-// Configure React Testing Library
-configure({
-  testIdAttribute: "data-testid",
-});
-
 // Polyfills for Next.js with proper typing
 Object.assign(global, {
   TextEncoder: TextEncoder,
