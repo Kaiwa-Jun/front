@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import * as nextAuth from "next-auth/react";
 import * as nextNavigation from "next/navigation";
 import GoalSetting from "./page";
